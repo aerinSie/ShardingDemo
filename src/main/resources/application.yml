@@ -1,0 +1,36 @@
+server:
+    port: 8080
+spring:
+  application:
+    name: ShardingDemo
+  shardingsphere:
+    props:
+      sql-show: true
+    datasource:
+      names: ds_0
+      ds_0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.1.171:3306/g_paypay?serverTimezone=Asia/Taipei&useSSL=false
+        username: root
+        password: 1qaz@WSX
+
+    rules:
+      sharding:
+        sharding-algorithms:
+          t_pay_order_history_inline:
+            type: COMPLEX_INLINE
+            props:
+              sharding-columns: MerchantId, CatchId # 分片列名称，多个列用逗号分隔。
+              algorithm-expression: t_pay_order_history_$->{ Math.abs((MerchantId + CatchId).hashCode()) % 2 } # 分片算法的行表达式
+              allow-range-query-with-inline-sharding: false # 是否允许范围查询。注意：范围查询会无视分片策略，进行全路由，默认 false
+
+        tables:
+          t_pay_order_history:
+            actual-data-nodes: ds_0.t_pay_order_history_$->{0..1}
+            table-strategy:
+              complex:
+                sharding-columns: MerchantId, CatchId
+                sharding-algorithm-name: t_pay_order_history_inline
+
+

@@ -2,6 +2,7 @@ package org.xxpay.shardingdemo.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.infra.hint.HintManager;
 import org.springframework.stereotype.Service;
 import org.xxpay.shardingdemo.entity.PayOrder;
 import org.xxpay.shardingdemo.mapper.PayOrderHistMapper;
@@ -17,10 +18,11 @@ public class PayOrderHistService {
 
     private final PayOrderHistMapper mapper;
 
-    public void createOrder(String orderId, String merchantId, BigDecimal amount) {
+    public void createOrder(String orderId, String merchantId, BigDecimal amount, String catchId) {
         PayOrder order = new PayOrder();
         order.setPayOrderId(orderId);
         order.setMerchantId(merchantId);
+        order.setCatchId(catchId);
         order.setAmount(amount);
         order.setStatus(0);
         order.setCreateTime(new Date());
@@ -39,8 +41,8 @@ public class PayOrderHistService {
         mapper.delete(orderId);
     }
 
-    public List<PayOrder> findByMerchantID(String merchantId) {
-        var list= mapper.findByMerchantID(merchantId);
+    public List<PayOrder> findByMerchantID(String merchantId, String catchId) {
+        var list= mapper.findByMerchantID(merchantId, catchId);
         System.out.println("PayOrder size:"+list.size());
         return list;
     }

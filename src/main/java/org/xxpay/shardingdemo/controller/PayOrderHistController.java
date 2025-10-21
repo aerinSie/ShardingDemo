@@ -19,8 +19,9 @@ public class PayOrderHistController {
     @PostMapping
     public String create(@RequestParam String orderId,
                          @RequestParam String merchantId,
-                         @RequestParam BigDecimal amount) {
-        service.createOrder(orderId, merchantId, amount);
+                         @RequestParam BigDecimal amount,
+                         @RequestParam String catchId) {
+        service.createOrder(orderId, merchantId, amount, catchId);
         return "OK";
     }
 
@@ -41,8 +42,8 @@ public class PayOrderHistController {
         return "Deleted";
     }
 
-    @GetMapping("/merchantId/{merchantId}")
-    public List<PayOrder> list(@PathVariable String merchantId) {
-        return service.findByMerchantID(merchantId);
+    @GetMapping("/merchantId/{merchantId}/{catchId}")
+    public List<PayOrder> list(@PathVariable String merchantId,@PathVariable String catchId) {
+        return service.findByMerchantID(merchantId, catchId);
     }
 }
