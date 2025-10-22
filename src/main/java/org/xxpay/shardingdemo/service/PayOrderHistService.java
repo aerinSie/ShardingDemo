@@ -18,7 +18,7 @@ public class PayOrderHistService {
 
     private final PayOrderHistMapper mapper;
 
-    public void createOrder(String orderId, String merchantId, BigDecimal amount, String catchId) {
+    public void createOrder(String orderId, String merchantId, BigDecimal amount, String catchId, String currency) {
         PayOrder order = new PayOrder();
         order.setPayOrderId(orderId);
         order.setMerchantId(merchantId);
@@ -26,6 +26,7 @@ public class PayOrderHistService {
         order.setAmount(amount);
         order.setStatus(0);
         order.setCreateTime(new Date());
+        order.setCurrency(currency);
         mapper.insert(order);
     }
 
@@ -41,8 +42,8 @@ public class PayOrderHistService {
         mapper.delete(orderId);
     }
 
-    public List<PayOrder> findByMerchantID(String merchantId, String catchId) {
-        var list= mapper.findByMerchantID(merchantId, catchId);
+    public List<PayOrder> findByMerchantID(String merchantId, String currency) {
+        var list= mapper.findByMerchantID(merchantId, currency);
         System.out.println("PayOrder size:"+list.size());
         return list;
     }

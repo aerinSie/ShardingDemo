@@ -48,7 +48,7 @@ class ShardingDemoApplicationTests {
      */
     @Test
     void getOrderListFromAllTable() {
-        var orders = service.findByMerchantID("a501","AAPAY");
+        var orders = service.findByMerchantID("a501", "AAPAY");
         System.out.println("=============明細===============");
         orders.forEach(System.out::println);
     }
@@ -68,19 +68,23 @@ class ShardingDemoApplicationTests {
 
 
     /**
-     * 以 雙主鍵 merchantId+catchId 的餘數分表存入 t_pay_order_history
+     * 以 雙主鍵 merchantId + currency 的餘數分表存入 t_pay_order_history
      * 須配合 執行設定檔 application.yml_merchantId_and_catchId 為 application.yml
      */
     @Test
-    void insertOrder() {
-        String orderId = "Order" + new Date().getTime();
-        String merchantId = "a501";
-        String catchId = "AAPAY"; // 理論會存入 t_pay_order_history_1
-        service.createOrder(orderId, merchantId , BigDecimal.valueOf(12345), catchId);
+    void insertOrder() throws Exception {
 
+        var currencyList = CurrencyEnum.values();
+        for (var currency : currencyList) {
+            String orderId = "Order" + new Date().getTime();
+            String merchantId = orderId.hashCode()%2==0?"a501":"a502";
+            String catchId = "AAPAY" + Math.abs(orderId.hashCode() % 2); // 理論會存入 t_pay_order_history_0, t_pay_order_history_1
+            String currencyCode = currency.getCode();
+            service.createOrder(orderId, merchantId, BigDecimal.valueOf(12345), catchId, currencyCode);
 
-        catchId = "8BQPAY"; // 理論會存入 t_pay_order_history_0
-        service.createOrder(orderId, merchantId , BigDecimal.valueOf(12345), catchId);
+            Thread.sleep(500);
+        }
+
         System.out.println("=============success===============");
     }
 }

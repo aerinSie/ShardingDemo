@@ -9,16 +9,16 @@ import java.util.List;
 public interface PayOrderHistMapper {
 
     @Insert("INSERT INTO t_pay_order_history(payOrderId, merchantId, catchId, amount, status, createTime" +
-            ",merchantOrderNo, notifyUrl) " +
+            ",merchantOrderNo, notifyUrl,currency) " +
             "VALUES(#{order.payOrderId}, #{order.merchantId},#{order.catchId}, #{order.amount}, #{order.status}," +
-            " #{order.createTime},#{order.payOrderId} ,#{order.payOrderId})")
+            " #{order.createTime},#{order.payOrderId} ,#{order.payOrderId} ,#{order.currency})")
     int insert(@Param("order" )PayOrder order);
 
     @Select("SELECT * FROM t_pay_order_history WHERE payOrderId = #{orderId}")
     PayOrder findById(String orderId);
 
-    @Select("SELECT * FROM t_pay_order_history WHERE merchantId = #{merchantId} and catchId = #{catchId}")
-    List<PayOrder> findByMerchantID(String merchantId,String catchId);
+    @Select("SELECT * FROM t_pay_order_history WHERE merchantId = #{merchantId} and currency = #{currency}")
+    List<PayOrder> findByMerchantID(String merchantId, String currency);
 
     @Update("UPDATE t_pay_order_history SET status = #{status} WHERE payOrderId = #{orderId}")
     int updateStatus(String orderId,  Integer status);

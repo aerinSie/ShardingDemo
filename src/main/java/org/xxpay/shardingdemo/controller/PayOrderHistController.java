@@ -20,8 +20,9 @@ public class PayOrderHistController {
     public String create(@RequestParam String orderId,
                          @RequestParam String merchantId,
                          @RequestParam BigDecimal amount,
-                         @RequestParam String catchId) {
-        service.createOrder(orderId, merchantId, amount, catchId);
+                         @RequestParam String catchId,
+                         @RequestParam String currency) {
+        service.createOrder(orderId, merchantId, amount, catchId, currency);
         return "OK";
     }
 
