@@ -77,7 +77,8 @@ class ShardingDemoApplicationTests {
         var currencyList = CurrencyEnum.values();
         for (var currency : currencyList) {
             String orderId = "Order" + new Date().getTime();
-            String merchantId = orderId.hashCode()%2==0?"a501":"a502";
+            var mod = Math.abs(orderId.hashCode()) % 5;
+            String merchantId = (mod == 0) ? "a501" : "a50" + (mod + 1);
             String catchId = "AAPAY" + Math.abs(orderId.hashCode() % 2); // 理論會存入 t_pay_order_history_0, t_pay_order_history_1
             String currencyCode = currency.getCode();
             service.createOrder(orderId, merchantId, BigDecimal.valueOf(12345), catchId, currencyCode);
